@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# Stub gh for tests. Never touches the network.
+#
+# `gh api ENDPOINT` serves $STUB_DIR/<key>.json, where <key> is the endpoint
+# path (query string dropped, "/" replaced by "_"), plus ".status-<v>" when a
+# `-f status=<v>` field is given. Variants:
+#   <key>.callN.json   served on the Nth request for <key>, if present
+#   <key>.pageN.json   extra pages (N >= 2) returned with --paginate
+#   <key>.fail         the request fails
+# A missing file is a 404. --jq is applied to each page with jq.
+#
+# `gh run rerun ID ...` appends ID to $STUB_DIR/reruns.log, or fails with the
+# contents of $STUB_DIR/rerun.fail if that file exists.
+#
+# Every call is appended to $STUB_DIR/calls.log.
+set -uo pipefail
+: "${STUB_DIR:?STUB_DIR is not set}"
+
+printf '%s\n' "$*" >>"$STUB_DIR/calls.log"
+
+if [[ "${1:-}" == run && "${2:-}" == rerun ]]; then
+  if [[ -e "$STUB_DIR/rerun.fail" ]]; then
+    cat "$STUB_DIR/rerun.fail" >&2
+    exit 1
+  fi
+  printf '%s\n' "${3:-}" >>"$STUB_DIR/reruns.log"
+  exit 0
+fi
+
+if [[ "${1:-}" != api ]]; then
+  echo "stub gh: unsupported command: $*" >&2
+  exit 2
+fi
+shift
+
+endpoint="" filter="" status="" paginate=0
+while (($#)); do
+  case "$1" in
+    --paginate) paginate=1 ;;
+    --jq | -q) filter="$2"; shift ;;
+    -X | --method) shift ;;
+    -f | -F | --raw-field | --field)
+      case "$2" in status=*) status="${2#status=}" ;; esac
+      shift
+      ;;
+    -*) echo "stub gh: unsupported flag: $1" >&2; exit 2 ;;
+    *) endpoint="$1" ;;
+  esac
+  shift
+done
+
+path="${endpoint%%\?*}"
+path="${path#https://api.github.com/}"
+key=$(printf '%s' "$path" | tr '/' '_')
+[[ -n "$status" ]] && key+=".status-$status"
+base="$STUB_DIR/$key"
+
+n=1
+[[ -f "$base.count" ]] && n=$(($(cat "$base.count") + 1))
+echo "$n" >"$base.count"
+
+if [[ -e "$base.fail" ]]; then
+  echo "HTTP 500: stub failure for $path" >&2
+  exit 1
+fi
+
+first="$base.json"
+[[ -f "$base.call$n.json" ]] && first="$base.call$n.json"
+if [[ ! -f "$first" ]]; then
+  echo "HTTP 404: Not Found ($path)" >&2
+  exit 1
+fi
+
+pages=("$first")
+if ((paginate)); then
+  p=2
+  while [[ -f "$base.page$p.json" ]]; do
+    pages+=("$base.page$p.json")
+    p=$((p + 1))
+  done
+fi
+
+for page in "${pages[@]}"; do
+  if [[ -n "$filter" ]]; then
+    jq -cr "$filter" "$page" | tr -d '\r' || exit 1
+  else
+    tr -d '\r' <"$page"
+  fi
+done

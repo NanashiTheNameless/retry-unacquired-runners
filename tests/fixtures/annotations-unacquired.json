@@ -1,0 +1,34 @@
+[
+  {
+    "path": ".github",
+    "start_line": 1,
+    "end_line": 1,
+    "annotation_level": "failure",
+    "message": "The job was not acquired by Runner of type hosted even after multiple attempts",
+    "title": ""
+  },
+  {
+    "path": ".github",
+    "start_line": 1,
+    "end_line": 1,
+    "annotation_level": "notice",
+    "message": "Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times.",
+    "title": ""
+  },
+  {
+    "path": ".github",
+    "start_line": 1,
+    "end_line": 1,
+    "annotation_level": "notice",
+    "message": "Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times.",
+    "title": ""
+  },
+  {
+    "path": ".github",
+    "start_line": 1,
+    "end_line": 1,
+    "annotation_level": "notice",
+    "message": "Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times.",
+    "title": ""
+  }
+]

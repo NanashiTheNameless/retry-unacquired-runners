@@ -1,0 +1,80 @@
+name: Retry unacquired runners
+description: Rerun workflow jobs that failed because no runner picked them up.
+author: NanashiTheNameless
+
+inputs:
+  github-token:
+    description: Token used for API calls and reruns. Needs actions:write, and checks:read when require-annotation is true.
+    default: ${{ github.token }}
+  run-id:
+    description: Evaluate only this run. If empty, use the workflow_run event's run when there is one, and otherwise sweep.
+    default: ""
+  label-pattern:
+    description: Case-insensitive regex. A job without steps counts only if one of its runner labels matches. Empty matches every label.
+    default: ""
+  exclude-label-pattern:
+    description: Case-insensitive regex. A job with any label matching this is never treated as unacquired.
+    default: ""
+  require-annotation:
+    description: Also require the job's check run annotations to match annotation-pattern.
+    default: "true"
+  annotation-pattern:
+    description: Case-insensitive regex matched against each annotation message.
+    default: "was not acquired by Runner of type"
+  sweep-lookback-hours:
+    description: The sweep only considers runs created within this many hours.
+    default: "48"
+  max-run-attempt:
+    description: A run whose run_attempt is above this is not rerun.
+    default: "50"
+  max-run-age-days:
+    description: A run created this many days ago or earlier is not rerun.
+    default: "30"
+  skip-superseded:
+    description: Skip a run when a newer run of the same workflow exists for the same branch and event.
+    default: "true"
+  exclude-workflows:
+    description: Case-insensitive regex matched against each run's workflow path and name. Matching runs are ignored.
+    default: ""
+  fail-on-limit:
+    description: Fail the step when an otherwise eligible run has hit a limit.
+    default: "true"
+  dry-run:
+    description: Evaluate and log decisions without rerunning anything.
+    default: "false"
+  allow-private-repos:
+    description: Run in private and internal repositories. When false, the action exits without evaluating anything there.
+    default: "false"
+
+outputs:
+  rerun-ids:
+    description: Space-separated ids of runs that were rerun, including runs found already queued again.
+    value: ${{ steps.retry.outputs.rerun-ids }}
+  limit-ids:
+    description: Space-separated ids of eligible runs that hit a limit.
+    value: ${{ steps.retry.outputs.limit-ids }}
+  evaluated:
+    description: Number of runs evaluated.
+    value: ${{ steps.retry.outputs.evaluated }}
+
+runs:
+  using: composite
+  steps:
+    - id: retry
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        INPUT_RUN_ID: ${{ inputs.run-id }}
+        INPUT_LABEL_PATTERN: ${{ inputs.label-pattern }}
+        INPUT_EXCLUDE_LABEL_PATTERN: ${{ inputs.exclude-label-pattern }}
+        INPUT_REQUIRE_ANNOTATION: ${{ inputs.require-annotation }}
+        INPUT_ANNOTATION_PATTERN: ${{ inputs.annotation-pattern }}
+        INPUT_SWEEP_LOOKBACK_HOURS: ${{ inputs.sweep-lookback-hours }}
+        INPUT_MAX_RUN_ATTEMPT: ${{ inputs.max-run-attempt }}
+        INPUT_MAX_RUN_AGE_DAYS: ${{ inputs.max-run-age-days }}
+        INPUT_SKIP_SUPERSEDED: ${{ inputs.skip-superseded }}
+        INPUT_EXCLUDE_WORKFLOWS: ${{ inputs.exclude-workflows }}
+        INPUT_FAIL_ON_LIMIT: ${{ inputs.fail-on-limit }}
+        INPUT_DRY_RUN: ${{ inputs.dry-run }}
+        INPUT_ALLOW_PRIVATE_REPOS: ${{ inputs.allow-private-repos }}
+      run: bash "$GITHUB_ACTION_PATH/src/retry.sh"

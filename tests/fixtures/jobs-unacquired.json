@@ -1,0 +1,121 @@
+{
+  "total_count": 5,
+  "jobs": [
+    {
+      "id": 3001,
+      "run_id": 1001,
+      "name": "build (ubuntu-22.04)",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "ubuntu-22.04"
+      ],
+      "steps": [
+        {
+          "name": "Step 1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Step 2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Step 3",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Step 4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Step 7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Step 8",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Step 9",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        }
+      ],
+      "runner_id": 1000056486,
+      "runner_name": "GitHub Actions 1000056486",
+      "run_attempt": 1,
+      "check_run_url": "https://api.github.com/repos/example-owner/example-repo/check-runs/3001"
+    },
+    {
+      "id": 3002,
+      "run_id": 1001,
+      "name": "build (macos-26, arm64)",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "labels": [
+        "macos-26"
+      ],
+      "steps": [],
+      "runner_id": 0,
+      "runner_name": "",
+      "run_attempt": 1,
+      "check_run_url": "https://api.github.com/repos/example-owner/example-repo/check-runs/3002"
+    },
+    {
+      "id": 3003,
+      "run_id": 1001,
+      "name": "build (macos-26, x86_64)",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "labels": [
+        "macos-26"
+      ],
+      "steps": [],
+      "runner_id": 0,
+      "runner_name": "",
+      "run_attempt": 1,
+      "check_run_url": "https://api.github.com/repos/example-owner/example-repo/check-runs/3003"
+    },
+    {
+      "id": 3004,
+      "run_id": 1001,
+      "name": "package (macos)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "labels": [],
+      "steps": [],
+      "runner_id": null,
+      "runner_name": null,
+      "run_attempt": 1,
+      "check_run_url": "https://api.github.com/repos/example-owner/example-repo/check-runs/3004"
+    },
+    {
+      "id": 3005,
+      "run_id": 1001,
+      "name": "publish",
+      "status": "completed",
+      "conclusion": "skipped",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "steps": [],
+      "runner_id": null,
+      "runner_name": null,
+      "run_attempt": 1,
+      "check_run_url": "https://api.github.com/repos/example-owner/example-repo/check-runs/3005"
+    }
+  ]
+}

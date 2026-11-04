@@ -1,0 +1,188 @@
+{
+  "total_count": 3,
+  "jobs": [
+    {
+      "id": 3101,
+      "run_id": 1002,
+      "name": "build (windows-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "labels": [
+        "windows-latest"
+      ],
+      "steps": [
+        {
+          "name": "Step 1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Step 2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Step 3",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Step 4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Step 7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Step 8",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Step 9",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        }
+      ],
+      "runner_id": 1000056166,
+      "runner_name": "GitHub Actions 1000056166",
+      "run_attempt": 1,
+      "check_run_url": "https://api.github.com/repos/example-owner/example-repo/check-runs/3101"
+    },
+    {
+      "id": 3102,
+      "run_id": 1002,
+      "name": "build (windows-11-arm)",
+      "status": "completed",
+      "conclusion": "failure",
+      "labels": [
+        "windows-11-vs2026-arm"
+      ],
+      "steps": [
+        {
+          "name": "Step 1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Step 2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Step 3",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Step 4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Step 5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Step 6",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 6
+        },
+        {
+          "name": "Step 7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Step 8",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 8
+        },
+        {
+          "name": "Step 9",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9
+        },
+        {
+          "name": "Step 10",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 10
+        },
+        {
+          "name": "Step 11",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 11
+        },
+        {
+          "name": "Step 12",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 12
+        },
+        {
+          "name": "Step 13",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 13
+        },
+        {
+          "name": "Step 25",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 25
+        },
+        {
+          "name": "Step 26",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 26
+        },
+        {
+          "name": "Step 27",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 27
+        }
+      ],
+      "runner_id": 1000056169,
+      "runner_name": "GitHub Actions 1000056169",
+      "run_attempt": 1,
+      "check_run_url": "https://api.github.com/repos/example-owner/example-repo/check-runs/3102"
+    },
+    {
+      "id": 3103,
+      "run_id": 1002,
+      "name": "package (windows)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "labels": [],
+      "steps": [],
+      "runner_id": null,
+      "runner_name": null,
+      "run_attempt": 1,
+      "check_run_url": "https://api.github.com/repos/example-owner/example-repo/check-runs/3103"
+    }
+  ]
+}
