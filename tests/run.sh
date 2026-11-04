@@ -75,7 +75,7 @@ called() { grep -Fq -- "$1" "$STUB_DIR/calls.log" || { echo "missing gh call: $1
 no_call() { ! grep -Fq -- "$1" "$STUB_DIR/calls.log" || { echo "unexpected gh call: $1"; return 1; }; }
 reruns() {
   local got
-  got=$(cat "$STUB_DIR/reruns.log" 2>/dev/null | tr '\n' ' ')
+  got=$( { tr '\n' ' ' < "$STUB_DIR/reruns.log"; } 2>/dev/null)
   [[ "${got% }" == "$1" ]] || { echo "reruns '${got% }', want '$1'"; return 1; }
 }
 
