@@ -118,6 +118,31 @@ test_real_failure_wins_over_unacquired() {
   line "$TAG: real failure (1 job(s) failed after running steps)" && reruns ""
 }
 
+test_exclude_jobs_ignores_gate_job() {
+  unacquired
+  serve actions/runs/1001/jobs jobs-unacquired.json \
+    '.jobs += [.jobs[0] | .id = 3006 | .name = "CI Success" | .conclusion = "failure"]'
+  run_action INPUT_RUN_ID=1001 INPUT_EXCLUDE_JOBS='^ci success$'
+  exit_is 0 && line "$TAG: rerun (2 unacquired job(s))" && reruns 1001
+}
+
+test_gate_job_is_real_failure_without_exclude_jobs() {
+  unacquired
+  serve actions/runs/1001/jobs jobs-unacquired.json \
+    '.jobs += [.jobs[0] | .id = 3006 | .name = "CI Success" | .conclusion = "failure"]'
+  run_action INPUT_RUN_ID=1001
+  line "$TAG: real failure (1 job(s) failed after running steps)" && reruns ""
+}
+
+test_exclude_jobs_only_matching_failures_is_nothing_unacquired() {
+  repo
+  serve actions/runs/1002 run-real-failure.json
+  serve actions/runs/1002/jobs jobs-real-failure.json
+  newest 1002
+  run_action INPUT_RUN_ID=1002 INPUT_EXCLUDE_JOBS='.'
+  exit_is 0 && says "not ours (nothing unacquired)" && reruns ""
+}
+
 test_not_ours_label_pattern() {
   unacquired
   run_action INPUT_RUN_ID=1001 INPUT_LABEL_PATTERN='^ubuntu'
@@ -351,6 +376,11 @@ test_unreadable_run() {
 test_invalid_regex() {
   run_action INPUT_RUN_ID=1001 INPUT_LABEL_PATTERN='('
   exit_is 1 && says "label-pattern is not a valid regex"
+}
+
+test_invalid_exclude_jobs_regex() {
+  run_action INPUT_RUN_ID=1001 INPUT_EXCLUDE_JOBS='('
+  exit_is 1 && says "exclude-jobs is not a valid regex"
 }
 
 test_invalid_boolean() {

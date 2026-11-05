@@ -36,6 +36,9 @@ inputs:
   exclude-workflows:
     description: Case-insensitive regex matched against each run's workflow path and name. Matching runs are ignored.
     default: ""
+  exclude-jobs:
+    description: Case-insensitive regex matched against each job's name. Matching jobs are ignored when classifying a run, but a rerun still reruns them.
+    default: ""
   fail-on-limit:
     description: Fail the step when an otherwise eligible run has hit a limit.
     default: "true"
@@ -74,6 +77,7 @@ runs:
         INPUT_MAX_RUN_AGE_DAYS: ${{ inputs.max-run-age-days }}
         INPUT_SKIP_SUPERSEDED: ${{ inputs.skip-superseded }}
         INPUT_EXCLUDE_WORKFLOWS: ${{ inputs.exclude-workflows }}
+        INPUT_EXCLUDE_JOBS: ${{ inputs.exclude-jobs }}
         INPUT_FAIL_ON_LIMIT: ${{ inputs.fail-on-limit }}
         INPUT_DRY_RUN: ${{ inputs.dry-run }}
         INPUT_ALLOW_PRIVATE_REPOS: ${{ inputs.allow-private-repos }}

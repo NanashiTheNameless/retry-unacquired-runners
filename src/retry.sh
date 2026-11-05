@@ -53,6 +53,7 @@ MAX_ATTEMPT=$(uint max-run-attempt "${INPUT_MAX_RUN_ATTEMPT:-50}") || exit 1
 MAX_AGE_DAYS=$(uint max-run-age-days "${INPUT_MAX_RUN_AGE_DAYS:-30}") || exit 1
 SKIP_SUPERSEDED=$(bool skip-superseded "${INPUT_SKIP_SUPERSEDED:-true}") || exit 1
 EXCL_WF_RE="${INPUT_EXCLUDE_WORKFLOWS:-}"
+EXCL_JOB_RE="${INPUT_EXCLUDE_JOBS:-}"
 FAIL_ON_LIMIT=$(bool fail-on-limit "${INPUT_FAIL_ON_LIMIT:-true}") || exit 1
 DRY_RUN=$(bool dry-run "${INPUT_DRY_RUN:-false}") || exit 1
 ALLOW_PRIVATE=$(bool allow-private-repos "${INPUT_ALLOW_PRIVATE_REPOS:-false}") || exit 1
@@ -62,6 +63,7 @@ regex label-pattern "$LABEL_RE"
 regex exclude-label-pattern "$EXCL_LABEL_RE"
 regex annotation-pattern "$ANN_RE"
 regex exclude-workflows "$EXCL_WF_RE"
+regex exclude-jobs "$EXCL_JOB_RE"
 
 export GH_REPO="$REPO"
 host="${SERVER_URL#*://}"
@@ -157,12 +159,13 @@ evaluate_run() {
   # 3. Classify the latest attempt's jobs.
   local jobs summary
   if ! jobs=$(gh api --paginate "repos/$REPO/actions/runs/$id/jobs?filter=latest&per_page=100" \
-      --jq '.jobs[] | {conclusion, steps: (.steps // [] | length), labels: (.labels // []), check_run_url}'); then
+      --jq '.jobs[] | {name, conclusion, steps: (.steps // [] | length), labels: (.labels // []), check_run_url}'); then
     log "$tag: error (cannot list jobs)"
     return 1
   fi
-  if ! summary=$(jqr -rs --arg inc "$LABEL_RE" --arg exc "$EXCL_LABEL_RE" '
-      [.[] | select(.conclusion == "failure" or .conclusion == "cancelled" or .conclusion == "timed_out")] as $bad
+  if ! summary=$(jqr -rs --arg inc "$LABEL_RE" --arg exc "$EXCL_LABEL_RE" --arg exj "$EXCL_JOB_RE" '
+      [.[] | select($exj == "" or ((.name // "") | test($exj; "i") | not))
+           | select(.conclusion == "failure" or .conclusion == "cancelled" or .conclusion == "timed_out")] as $bad
       | [$bad[] | select(.steps > 0)] as $real
       | [$bad[] | select(.steps == 0
             and (.conclusion == "failure" or .conclusion == "cancelled")

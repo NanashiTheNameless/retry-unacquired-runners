@@ -108,6 +108,7 @@ them first.
 | `max-run-age-days` | `30` | A run created this many days ago or earlier is not rerun. GitHub refuses reruns after 30 days. |
 | `skip-superseded` | `true` | Skip a run when a newer run of the same workflow exists for the same branch and event. |
 | `exclude-workflows` | `""` | Case-insensitive regex matched against each run's workflow path (`.github/workflows/x.yml`) and name. Matching runs are ignored. The calling workflow is always excluded. |
+| `exclude-jobs` | `""` | Case-insensitive regex matched against each job's name. Matching jobs are ignored when classifying a run, so a gate job that fails only because a job it needs was not acquired does not count as a real failure. `gh run rerun --failed` still reruns them along with the jobs they depend on. Example: `^CI Success$`. |
 | `fail-on-limit` | `true` | Fail the step when an otherwise eligible run has hit a limit, so you get notified. The run is always listed in the job summary. |
 | `dry-run` | `false` | Evaluate and log decisions without rerunning anything. `rerun-ids` stays empty. |
 | `allow-private-repos` | `false` | Run in private and internal repositories. When `false`, the action logs one line and exits successfully there without evaluating any run. |
@@ -129,6 +130,8 @@ The action always looks at the latest attempt of a run.
   default) an annotation matching `annotation-pattern`.
 - **Real failure:** any job with conclusion `failure`, `cancelled` or
   `timed_out` that executed at least one step. The run is left alone.
+- **Ignored:** any job whose name matches `exclude-jobs`. It is neither a
+  real failure nor unacquired.
 - **Not ours:** a job with zero steps that fails the label or annotation
   checks. The run is left alone.
 
